@@ -1,0 +1,142 @@
+<html>
+<head>
+	<title>Story-Share</title>
+	<link href="index.css" rel="stylesheet">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+	<header id="masthead">
+		<div class="masthead-title">
+			<h1>Story-Share</h1>	
+		</div>
+		<div class="masthead-caption">
+			<h3>Post your short stories. Others review them and the best ones make it to the top.</h3>
+		</div>
+
+		<nav>
+			<a href="#readjudge">Read & Judge</a>
+			<a href="#winners">Winners</a>
+			<a href="#post">Post</a>
+			<a href="#contact">Feedback / Contact</a>
+		</nav>
+	</header>
+
+	<main id="content">
+		<div class="content-row">
+			<aside>
+				<blockquote class="big-quote">"Stories give a soul to the universe, wings to the mind, flight to the imagination, and life to everything." Plato</blockquote>
+			</aside>
+		</div>
+
+		<div class="content-row">
+			<section>
+				<header><h2 id="readjudge">Read, Judge, and Post Stories</h2></header>
+				
+				<p>Got a great story? Post it here. Users can review all stories (chosen randomly). The top rated stories are shown in the end. Previous winners? Seems like a good idea. The best stories get recorded into podcasts that you can listen to while you drive, work out, etc.</p>
+			</section>
+		</div>
+
+		<div class="content-row">
+			<section>
+				<header><h2>Try This One</h2></header>
+
+				<article>
+					<header>
+						<img class="story-thumbnail-img" src="https://format-com-cld-res.cloudinary.com/image/private/s--OLePU2-j--/c_limit,g_center,h_1200,w_65535/a_auto,fl_keep_iptc.progressive,q_95/124747-6879497-Strohl.jpg"/> <h3>The Garden of Forking Paths</h3>
+					</header>
+
+					<p>. . . and I hung up the phone. Immediately I recollected the voice that had spoken in 
+	German. It was that of Captain Richard Madden. Madden, in Viktor Runeberg's 
+	office, meant the end of all our work and - though this seemed a secondary matter, 
+	or should have seemed so to me - of our lives also. His being there meant that 
+	Runeberg had been arrested or murdered . . .</p>
+
+					<div class="preview-overlay">
+						<div>
+							<a href="garden-of-forking-paths.html"><ion-icon name="book"></ion-icon>Go To Full Story</a>
+							<a href=""><ion-icon name="refresh"></ion-icon>Load Different Story</a>
+						</div>
+					</div>
+				</article>
+			</section>
+		</div>
+
+		<div class="content-row">
+			<section>
+				<header><h2 id="winners">Past Winners</h2></header>
+
+				<p>Lots of winners... so many</p>
+				
+				<p><button id="expandbutton" style="font-size: 1.2em"><ion-icon name="book"></ion-icon>Read them</button>
+
+				<article id="winnerstable" onload="console.log('hi')" style="opacity: 0; transition: opacity 1.0s, max-height 3.0s">
+					<header>
+						<img class="story-thumbnail-img" src="https://format-com-cld-res.cloudinary.com/image/private/s--OLePU2-j--/c_limit,g_center,h_1200,w_65535/a_auto,fl_keep_iptc.progressive,q_95/124747-6879497-Strohl.jpg"/> <h3>The Garden of Forking Paths</h3>
+					</header>
+
+					<p>. . . and I hung up the phone. Immediately I recollected the voice that had spoken in 
+	German. It was that of Captain Richard Madden. Madden, in Viktor Runeberg's 
+	office, meant the end of all our work and - though this seemed a secondary matter, 
+	or should have seemed so to me - of our lives also. His being there meant that 
+	Runeberg had been arrested or murdered . . .</p>
+
+					<!-- <div class="preview-overlay">
+						<div>
+							<a href="garden-of-forking-paths.html"><ion-icon name="book"></ion-icon>Go To Full Story</a>
+							<a href=""><ion-icon name="refresh"></ion-icon>Load Different Story</a>
+						</div>
+					</div> -->
+				</article>
+
+				<script>
+					var winners = document.getElementById('winnerstable');
+					var expandTo = winners.clientHeight;
+					winners.style.maxHeight = '0px';
+
+					var expandButton = document.getElementById('expandbutton');
+					expandButton.onclick = () => {
+						this.winners.style.opacity = '1.0';
+						this.winners.style.maxHeight = this.expandTo + 'px';
+						expandButton.style.display = 'none';
+					}
+				</script>
+
+				<p>or...</p>
+				<p><button id="podcastbutton" style="font-size: 1.2em"><ion-icon name="mic"></ion-icon>Hear them all in a podcast</button>
+			</section>
+		</div>
+
+		<div class="content-row">
+			<section>
+				<header><h2 id="post">Share Yours</h2></header>
+
+				<p>Add your story to the form below.</p>
+
+				<form>
+					<input type="text" value="Story Title"/><br/><br/>
+					<input type="text" value="Hyperlink to cover image for story (optional)"/><br/><br/>
+					<textarea>Type your story here</textarea><br/><br/>
+					<input type="submit" value="Send"/>
+			</section>
+		</div>
+
+		<div class="content-row">
+			<section>
+				<header><h2 id="contact">Contact / Feedback</h2></header>
+
+				<p>Comments? Questions?</p>
+
+				<form>
+					<textarea>Type comment here</textarea><br/><br/>
+					<input type="text" value="Email address" /><br/><br/>
+					<input type="submit" value="Send"/>
+				</form>
+			</section>
+		</div>
+	</main>
+
+	<script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js"></script>
+	
+</body>
+</html>
