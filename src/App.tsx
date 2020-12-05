@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
 import Masthead from "./components/Masthead";
-import RandomStory from "./components/RandomStory";
+import StoryPreview from "./components/StoryPreview";
 import StoryForm from "./components/StoryForm";
 import * as Realm from "realm-web";
 
@@ -37,8 +37,10 @@ function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<Masthead />
-			<RandomStory mongoUser={mongoUser} />
+			<StoryPreview mongoUser={mongoUser} />
 			<StoryForm mongoUser={mongoUser} />
+
+            {/* Add a route here for loading a specific story (e.g. /story/ or /story/as324wdf223sdfs/) */}
 		</ThemeProvider>
 	);
 }
