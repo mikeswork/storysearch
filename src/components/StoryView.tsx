@@ -20,14 +20,14 @@ const View = styled.div`
 interface StoryViewProps {
 	title?: string;
 	author?: string;
-	text: string | [string];
+	text: string | string[];
 }
 
 export default function StoryView({ text = "", ...props }: StoryViewProps) {
 	let parId = 0;
     
     // Check if passed the entire text or an array of separate paragraphs into component
-    let paragraphs = (typeof text == "object") ? text : text.split(/\n/);
+    let paragraphs = (typeof text === "object") ? text : text.split(/\n/);
 
 	return (
 		<View>

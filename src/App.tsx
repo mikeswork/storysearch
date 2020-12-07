@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ThemeProvider } from "styled-components";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Masthead from "./components/Masthead";
 import StoryPreview from "./components/StoryPreview";
 import StoryForm from "./components/StoryForm";
+import StoryFull from "./components/StoryFull";
 import * as Realm from "realm-web";
 
 const app: Realm.App = new Realm.App({ id: "storysearchapp-phwgx" });
@@ -13,7 +15,7 @@ const theme = {
 
 function App() {
     const [mongoUser, setMongoUser]: [Realm.User | null, Function] = useState<Realm.User | null>(null);
-    
+
 	useEffect(() => {
 		loginAnonymous().then((user) => {
             console.log("Successfully logged in!", user);
@@ -35,13 +37,21 @@ function App() {
     }
 
 	return (
-		<ThemeProvider theme={theme}>
-			<Masthead />
-			<StoryPreview mongoUser={mongoUser} />
-			<StoryForm mongoUser={mongoUser} />
+        <Router>
+            <ThemeProvider theme={theme}>
+                <Switch>
+                    <Route path="/story/:docId">
+                        <StoryFull mongoUser={mongoUser} />
+                    </Route>
 
-            {/* Add a route here for loading a specific story (e.g. /story/ or /story/as324wdf223sdfs/) */}
-		</ThemeProvider>
+                    <Route>
+                        <Masthead />
+                        <StoryPreview mongoUser={mongoUser} />
+                        <StoryForm mongoUser={mongoUser} />
+                    </Route>
+                </Switch>
+            </ThemeProvider>
+        </Router>
 	);
 }
 
