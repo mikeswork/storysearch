@@ -14,44 +14,48 @@ const theme = {
 };
 
 function App() {
-    const [mongoUser, setMongoUser]: [Realm.User | null, Function] = useState<Realm.User | null>(null);
+	const [mongoUser, setMongoUser]: [Realm.User | null, Function] = useState<Realm.User | null>(null);
 
 	useEffect(() => {
+		let isSubscribed = true;
+
 		loginAnonymous().then((user) => {
-            console.log("Successfully logged in!", user);
+			// console.log("Successfully logged in!", user);
 
-            setMongoUser(user)
-        });
-    }, []);
-    
-    async function loginAnonymous() {    
-        try {
-            console.log("Authenticating user...");
+			if (isSubscribed) setMongoUser(user);
+		});
 
-            // Authenticate the user
-            const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
-            return user;
-        } catch (err) {
-            console.error("Failed to log in:", err);
-        }
-    }
+		return () => { isSubscribed = false };
+	}, []);
+
+	async function loginAnonymous() {
+		try {
+			// console.log("Authenticating user...");
+
+			// Authenticate the user
+			const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
+			return user;
+		} catch (err) {
+			console.error("Failed to log in:", err);
+		}
+	}
 
 	return (
-        <Router>
-            <ThemeProvider theme={theme}>
-                <Switch>
-                    <Route path="/story/:docId">
-                        <StoryFull mongoUser={mongoUser} />
-                    </Route>
+		<Router>
+			<ThemeProvider theme={theme}>
+				<Switch>
+					<Route path="/story/:docId">
+						<StoryFull mongoUser={mongoUser} />
+					</Route>
 
-                    <Route>
-                        <Masthead />
-                        <StoryPreview mongoUser={mongoUser} />
-                        <StoryForm mongoUser={mongoUser} />
-                    </Route>
-                </Switch>
-            </ThemeProvider>
-        </Router>
+					<Route>
+						<Masthead />
+						<StoryPreview mongoUser={mongoUser} />
+						<StoryForm mongoUser={mongoUser} />
+					</Route>
+				</Switch>
+			</ThemeProvider>
+		</Router>
 	);
 }
 

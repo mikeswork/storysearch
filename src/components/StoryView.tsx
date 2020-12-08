@@ -1,30 +1,38 @@
 import React from "react";
 import styled from "styled-components";
 
-const View = styled.div`
+const WideView = styled.div`
     background-color: #eee;
     color: #111;
     font-family: sans-serif;
+    padding: 1em;
 
     h2, h3 {
         text-align: center;
     }
 	p {
 		min-height: 1em;
-		margin: 1em 0;
+		margin: 0.6em 0;
 		text-indent: 2em;
 		line-height: 1.75em;
 	}
 `;
 
+const NarrowView = styled(WideView)`
+    max-width: 1200px;
+`;
+
 interface StoryViewProps {
-	title?: string;
+	title: string;
 	author?: string;
-	text: string | string[];
+    text: string | string[];
+    isWide?: boolean;
 }
 
-export default function StoryView({ text = "", ...props }: StoryViewProps) {
-	let parId = 0;
+export default function StoryView({ text, isWide = false, ...props }: StoryViewProps) {
+    let parId = 0;
+    
+    const View = isWide ? WideView : NarrowView;
     
     // Check if passed the entire text or an array of separate paragraphs into component
     let paragraphs = (typeof text === "object") ? text : text.split(/\n/);

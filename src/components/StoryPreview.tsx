@@ -4,10 +4,6 @@ import StoryView from "./StoryView";
 import { getSpecificStory, getRandomStory } from "../util/getStories";
 import { Link, useParams } from "react-router-dom";
 
-interface StoryPreviewProps {
-    mongoUser: Realm.User | null;
-}
-
 const Div = styled.div`
 	position: relative;
 
@@ -16,7 +12,7 @@ const Div = styled.div`
 	}
 `;
 
-const getPreviewText = (full: string | string[]) => {
+const getIntroSlice = (full: string | string[]) => {
     let pText: string | string[];
     let pTextLength = 1000;
     let pTextTail = "...";
@@ -39,6 +35,10 @@ const getPreviewText = (full: string | string[]) => {
     }
 };
 
+interface StoryPreviewProps {
+    mongoUser: Realm.User | null;
+}
+
 export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
     const { docId } = useParams();
 
@@ -56,9 +56,8 @@ export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
 				setTitle(story.title || "");
 				setAuthor(story.author || "");
 
-                const storyBody = getPreviewText(story.body);
-                console.log(storyBody)
-				setStoryText(storyBody || "");
+                const previewBody = getIntroSlice(story.body);
+				setStoryText(previewBody || "");
 			} catch (error) {
 				console.log(error);
 			}
@@ -77,7 +76,7 @@ export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
 				<Link to={`/story/${storyId}`}>Read entire story.</Link>
 			</div>
 
-			<StoryView title={title} author={author} text={storyText} />
+			<StoryView isWide={true} title={title} author={author} text={storyText} />
 		</Div>
 	);
 }
