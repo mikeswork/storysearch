@@ -5,6 +5,7 @@ import Masthead from "./components/Masthead";
 import StoryPreview from "./components/StoryPreview";
 import StoryForm from "./components/StoryForm";
 import StoryFull from "./components/StoryFull";
+import RateTool from "./components/RateTool";
 import * as Realm from "realm-web";
 
 const app: Realm.App = new Realm.App({ id: "storysearchapp-phwgx" });
@@ -50,6 +51,7 @@ function App() {
 
 					<Route>
 						<Masthead />
+                        <RateTool />
 						<StoryPreview mongoUser={mongoUser} />
 						<StoryForm mongoUser={mongoUser} />
 					</Route>
