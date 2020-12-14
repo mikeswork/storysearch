@@ -40,12 +40,13 @@ interface StoryPreviewProps {
 }
 
 export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
+    // docId (i.e. load StoryPreview with specific story via url) is currently disabled (i.e. route doesn't exist).
     const { docId } = useParams();
 
-	const [storyId, setStoryId] = useState(undefined);
-	const [title, setTitle] = useState("");
-	const [author, setAuthor] = useState("");
-	const [storyText, setStoryText] = useState<string | string[]>("");
+	const [storyId, setStoryId] = useState();
+	const [title, setTitle] = useState();
+	//const [author, setAuthor] = useState();
+	const [storyText, setStoryText] = useState<string | string[]>();
 
 	const changeStory = useCallback(async () => {
 		if (mongoUser !== null) {
@@ -54,7 +55,7 @@ export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
 
 				setStoryId(story._id || undefined);
 				setTitle(story.title || "");
-				setAuthor(story.author || "");
+				//setAuthor(story.author || "");
 
                 const previewBody = getIntroSlice(story.body);
 				setStoryText(previewBody || "");
@@ -69,14 +70,14 @@ export default function StoryPreview({ mongoUser }: StoryPreviewProps) {
 	}, [changeStory]);
 
 	return (
-		<Div>
+		<Div data-testid="story-preview">
 			<div className="buttons">
 				<button onClick={() => changeStory()}>Read a Different Story</button>
 
 				<Link to={`/story/${storyId}`}>Read entire story.</Link>
 			</div>
 
-			<StoryView isWide={true} title={title} author={author} text={storyText} />
+			<StoryView isWide={true} title={title} text={storyText} />
 		</Div>
 	);
 }

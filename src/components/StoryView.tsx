@@ -23,9 +23,9 @@ const NarrowView = styled(WideView)`
 `;
 
 interface StoryViewProps {
-	title: string;
-	author?: string;
-    text: string | string[];
+	title: string | undefined;
+	author?: string | undefined;
+    text: string | string[] | undefined;
     isWide?: boolean;
 }
 
@@ -33,18 +33,20 @@ export default function StoryView({ text, isWide = false, ...props }: StoryViewP
     let parId = 0;
     
     const View = isWide ? WideView : NarrowView;
-    
+
+    let paragraphs: string[] = [];
+
     // Check if passed the entire text or an array of separate paragraphs into component
-    let paragraphs = (typeof text === "object") ? text : text.split(/\n/);
+    if (text) paragraphs = (typeof text === "object") ? text : text.split(/\n/);
 
 	return (
 		<View>
-			<h2>{props.title}</h2>
+			{props.title && <h2>{props.title}</h2>}
 
 			{props.author && <h3>by {props.author}</h3>}
 
 			{paragraphs.map((par) => (
-				<p className="story-para" key={parId++}>
+				<p className="story-para" key={parId++} data-testid="story-para">
 					{par}
 				</p>
 			))}

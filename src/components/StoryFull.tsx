@@ -23,16 +23,16 @@ export default function StoryFull({ mongoUser }: StoryFullProps) {
 	const { docId } = useParams();
 
 	const [storyId, setStoryId] = useState(undefined);
-	const [title, setTitle] = useState("");
-	const [author, setAuthor] = useState("");
-	const [storyText, setStoryText] = useState("");
+	const [title, setTitle] = useState();
+	//const [author, setAuthor] = useState();
+	const [storyText, setStoryText] = useState();
 
 	useEffect(() => {
 		if (mongoUser !== null) {
 			getSpecificStory(mongoUser, docId)
 				.then((story) => {
 					setTitle(story.title || "");
-					setAuthor(story.author || "");
+					//setAuthor(story.author || "");
 					setStoryText(story.body || "");
 				})
 				.catch((err) => {
@@ -60,7 +60,7 @@ export default function StoryFull({ mongoUser }: StoryFullProps) {
 				<button onClick={() => changeStory()}>Read a Different Story</button>
 			</div>
 
-			<StoryView title={title} author={author} text={storyText} />
+			<StoryView title={title} text={storyText} />
 		</Div>
 	);
 }
