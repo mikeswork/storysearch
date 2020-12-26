@@ -5,7 +5,7 @@ import Masthead from "./components/Masthead";
 import StoryPreview from "./components/StoryPreview";
 import StoryForm from "./components/StoryForm";
 import StoryFull from "./components/StoryFull";
-import RateTool from "./components/RateTool";
+import StoryWinner from "./components/StoryWinner";
 import * as Realm from "realm-web";
 
 const app: Realm.App = new Realm.App({ id: "storysearchapp-phwgx" });
@@ -15,10 +15,12 @@ const theme = {
 };
 
 function App() {
+    // console.log("[App][render]");
 	const [mongoUser, setMongoUser]: [Realm.User | null, Function] = useState<Realm.User | null>(null);
 
 	useEffect(() => {
-		let isSubscribed = true;
+        // console.log("[App][useEffect]");
+        let isSubscribed = true;
 
 		loginAnonymous().then((user) => {
 			// console.log("Successfully logged in!", user);
@@ -46,12 +48,15 @@ function App() {
 			<ThemeProvider theme={theme}>
 				<Switch>
 					<Route path="/story/:docId">
+						<StoryWinner mongoUser={mongoUser} />
+					</Route>
+
+                    <Route path="/story">
 						<StoryFull mongoUser={mongoUser} />
 					</Route>
 
 					<Route>
 						<Masthead />
-                        <RateTool />
 						<StoryPreview mongoUser={mongoUser} />
 						<StoryForm mongoUser={mongoUser} />
 					</Route>

@@ -1,63 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import StoryView from "./StoryView";
+import RateTool from "./RateTool";
 import { getSpecificStory, getRandomStory } from "../util/getStories";
-import { useParams, Redirect } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Div = styled.div`
 	position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 
 	.buttons {
 		position: absolute;
 	}
 `;
 
-interface StoryFullProps {
+interface StoryProps {
 	mongoUser: Realm.User | null;
 }
 
-export default function StoryFull({ mongoUser }: StoryFullProps) {
-	const { docId } = useParams();
+export default function StoryFull({ mongoUser }: StoryProps) {
+    // console.log("[StoryFull][render]");
+    const locState = useLocation().state;
+	const routedId = locState && locState.sId;
 
-	const [storyId, setStoryId] = useState(undefined);
+	const [storyId, setStoryId] = useState(routedId);
 	const [title, setTitle] = useState();
-	//const [author, setAuthor] = useState();
-	const [storyText, setStoryText] = useState();
+    const [storyText, setStoryText] = useState();
+
+	const getStory = useCallback(
+		async (excludeId?) => {
+			if (mongoUser !== null) {
+				try {
+					const story = excludeId
+						? await getRandomStory(mongoUser, excludeId)
+						: await getSpecificStory(mongoUser, routedId);
+
+                    if (story === null) throw new Error("Couldn't find story");
+
+					setStoryId(story._id.toString());
+					setTitle(story.title || "");
+                    setStoryText(story.body || "");
+				} catch (error) {
+					console.log(error);
+				}
+			}
+		},
+		[mongoUser, routedId]
+	);
 
 	useEffect(() => {
-		if (mongoUser !== null) {
-			getSpecificStory(mongoUser, docId)
-				.then((story) => {
-					setTitle(story.title || "");
-					//setAuthor(story.author || "");
-					setStoryText(story.body || "");
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-		}
-	}, [mongoUser, docId]);
-
-	const changeStory = async () => {
-		if (mongoUser !== null) {
-			try {
-				const story = await getRandomStory(mongoUser, { _id: 1 });
-				setStoryId(story._id);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-	};
+		getStory();
+	}, [getStory]);
 
 	return (
 		<Div>
-			{storyId && <Redirect to={`/story/${storyId}`} />}
+			<RateTool storyId={storyId} />
 
 			<div className="buttons">
-				<button onClick={() => changeStory()}>Read a Different Story</button>
+				<button onClick={() => getStory(storyId)}>Read a Different Story</button>
 			</div>
 
 			<StoryView title={title} text={storyText} />
