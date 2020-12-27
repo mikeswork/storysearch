@@ -1,5 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import { ObjectId } from "bson";
+import { getSpecificStory } from "../util/getStories";
 import pensoutlined from "../assets/pens-outlined.png";
 import pensfilled from "../assets/pens-filled.png";
 
@@ -34,7 +36,12 @@ const ClippedImg = styled.img`
         `}
 `;
 
-export default function RateTool(props) {
+interface RateProperties {
+	mongoUser: Realm.User | null;
+	storyId: string;
+}
+
+export default function RateTool(props: RateProperties) {
 	const score = useRef<number>();
 	const [clipPrcnt, setClipPrcnt] = useState("0%");
 	const [isScored, setIsScored] = useState<boolean>();
@@ -73,8 +80,30 @@ export default function RateTool(props) {
 		setIsScored(true);
 	};
 
-	const submitScore = () => {
-		console.error(`Need to implement submitting of score (current is ${score.current})`);
+	const submitScore = async () => {
+		try {
+			if (score.current === undefined) throw new Error("Can't vote until score selected");
+			if (props.mongoUser === null) throw new Error("Not connected to db.");
+
+			const { story, collection } = await getSpecificStory(props.mongoUser, props.storyId, undefined, true);
+            
+            if (story === null) throw new Error("Couldn't find story.");
+			if (story.acceptVotes !== true) {
+				throw new Error("Can't vote");
+				// Disable vote tool
+			}
+
+			const votesSoFar = story.votes >= 0 ? story.votes : 0;
+			const ratingSoFar = story.rating >= 0 ? story.rating : 0;
+			const update = { $set: { votes: votesSoFar + 1, rating: ratingSoFar + score.current } };
+            
+            const result = await collection.updateOne({ _id: new ObjectId(props.storyId) }, update);
+            
+            if (result === null) throw new Error("Vote wasn't saved.");
+			else console.log("Vote counted!"); // Disable vote tool
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	return (

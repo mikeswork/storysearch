@@ -28,6 +28,7 @@ export default function StoryFull({ mongoUser }: StoryProps) {
 	const [storyId, setStoryId] = useState(routedId);
 	const [title, setTitle] = useState();
     const [storyText, setStoryText] = useState();
+    const [canRate, setCanRate] = useState();
 
 	const getStory = useCallback(
 		async (excludeId?) => {
@@ -42,6 +43,7 @@ export default function StoryFull({ mongoUser }: StoryProps) {
 					setStoryId(story._id.toString());
 					setTitle(story.title || "");
                     setStoryText(story.body || "");
+                    setCanRate(story.acceptVotes);
 				} catch (error) {
 					console.log(error);
 				}
@@ -56,7 +58,7 @@ export default function StoryFull({ mongoUser }: StoryProps) {
 
 	return (
 		<Div>
-			<RateTool storyId={storyId} />
+			{ canRate && <RateTool mongoUser={mongoUser} storyId={storyId} /> }
 
 			<div className="buttons">
 				<button onClick={() => getStory(storyId)}>Read a Different Story</button>

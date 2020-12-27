@@ -2,7 +2,7 @@ import React, { useReducer } from "react";
 import styled from "styled-components";
 import StoryView from "./StoryView";
 
-interface StoryFormProps {
+interface StoryProps {
 	mongoUser: Realm.User | null;
 }
 
@@ -22,7 +22,7 @@ const fields = {
 let initState = {};
 Object.keys(fields).forEach((key) => (initState[key] = ""));
 
-export default function StoryForm(props: StoryFormProps) {
+export default function StoryForm(props: StoryProps) {
 	const formReducer = (prevState, action) => {
 		// console.log("[formReducer]", action);
 

@@ -41,7 +41,7 @@ interface StoryProps {
 export default function StoryPreview({ mongoUser }: StoryProps) {
 	const [storyId, setStoryId] = useState();
 	const [title, setTitle] = useState();
-	const [storyText, setStoryText] = useState<string | string[]>();
+    const [storyText, setStoryText] = useState<string | string[] | undefined>();
 
 	const getStory = useCallback(async (excludeId?) => {
 		if (mongoUser !== null) {
@@ -55,6 +55,7 @@ export default function StoryPreview({ mongoUser }: StoryProps) {
 				const previewBody = grabPreview(story.body);
 				setStoryText(previewBody || "");
 			} catch (error) {
+                setStoryText("Failed to load.");
 				console.log(error);
 			}
 		}

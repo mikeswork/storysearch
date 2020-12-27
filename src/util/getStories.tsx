@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 
-async function getSpecificStory(mongoUser: Realm.User, storyId: string, fields?: object) {
+async function getSpecificStory(mongoUser: Realm.User, storyId: string, fields?: object, returnWithCollect?: boolean) {
 	// console.log("[getSpecificStory]");
 	const mongodb = mongoUser.mongoClient("mongodb-atlas");
 	const stories = mongodb.db("content").collection("approvedstories");
@@ -8,7 +8,9 @@ async function getSpecificStory(mongoUser: Realm.User, storyId: string, fields?:
 	const fOptions: Realm.Services.MongoDB.FindOneOptions = fields ? { projection: fields } : {};
 
     const doc = await stories.findOne({ _id: new ObjectId(storyId) }, fOptions);
-	return doc;
+
+    if (returnWithCollect) return { story: doc, collection: stories };
+	else return doc;
 }
 
 export { getSpecificStory };
