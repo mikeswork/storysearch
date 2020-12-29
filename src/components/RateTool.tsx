@@ -96,7 +96,7 @@ const getScoreFromE = (e) => {
 };
 
 export default function RateTool(props: RateProperties) {
-	const [score, setScore] = useState<number>(0);
+	const [score, setScore] = useState<number>();
 	const [clipPrcnt, setClipPrcnt] = useState("0%");
 	const [isScored, setIsScored] = useState<boolean>();
 	const [voteSubmitted, setVoteSubmitted] = useState<boolean>();
@@ -114,7 +114,7 @@ export default function RateTool(props: RateProperties) {
 			// Score is 1 - 10
 			setScore(getScoreFromE(e));
 			// Convert score to percentage
-			setClipPrcnt(`${score * 10}%`);
+			setClipPrcnt(`${(score || 0) * 10}%`);
 		}
 	};
 
@@ -134,7 +134,7 @@ export default function RateTool(props: RateProperties) {
 		setScore(getScoreFromE(e));
 
 		// Convert score to percentage
-		setClipPrcnt(`${score * 10}%`);
+		setClipPrcnt(`${(score || 0) * 10}%`);
 		setIsScored(true);
 	};
 
@@ -178,7 +178,7 @@ export default function RateTool(props: RateProperties) {
 				Submit Score
 			</button>
 
-			<div className="score">{isScored && <span>Score: {score / 2} out of 5</span>}</div>
+			<div className="score">{isScored && <span>Score: {(score || 0) / 2} out of 5</span>}</div>
 
 			<div className="thanks">
 				<span>Thank You!</span>
