@@ -93,7 +93,14 @@ export default function RateTool(props: RateProperties) {
 	const score = useRef<number>();
 	const [clipPrcnt, setClipPrcnt] = useState("0%");
 	const [isScored, setIsScored] = useState<boolean>();
-	const [voted, setVoted] = useState<boolean>();
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>();
+
+    // Reset component when the user loads another story
+    React.useEffect(() => {
+		setClipPrcnt("0%");
+		setIsScored(false);
+		setVoteSubmitted(false);
+	}, [props.storyId]);
 
 	const slideRating = (e) => {
 		// console.log(e)
@@ -141,16 +148,16 @@ export default function RateTool(props: RateProperties) {
 
 			const result = await collection.updateOne({ _id: new ObjectId(props.storyId) }, update);
 			if (result === null) throw new Error("Couldn't save vote.");
-			
-            setVoted(true);
-            console.log("Vote counted!");
+
+			setVoteSubmitted(true);
+			console.log("Vote counted!");
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	return (
-		<Wrapper $isScored={isScored} $voted={voted}>
+		<Wrapper $isScored={isScored} $voted={voteSubmitted}>
 			<div
 				className="icons"
 				onMouseMove={slideRating}
