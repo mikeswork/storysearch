@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { ObjectId } from "bson";
 import { getSpecificStory } from "../util/getStories";
@@ -26,9 +26,7 @@ const Wrapper = styled.div`
             .icons {opacity: 1.0}
         `}
 
-	.thanks {
-		display: none;
-
+	.score, .thanks {
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -36,16 +34,23 @@ const Wrapper = styled.div`
 		bottom: 0;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.75);
 
 		font-size: 1.5em;
 		font-family: sans-serif;
 		font-weight: bold;
 
-		& span {
+		span {
 			padding: 0.2em 0.4em;
 			background-color: black;
 		}
+	}
+	.score {
+		display: flex;
+		pointer-events: none;
+	}
+	.thanks {
+		display: none;
+		background-color: rgba(255, 255, 255, 0.75);
 	}
 
 	${(props) =>
@@ -53,6 +58,7 @@ const Wrapper = styled.div`
 		`
             pointer-events: none;
             .thanks { display: flex; }
+            .score { display: none; }
         `}
 `;
 
@@ -73,30 +79,30 @@ interface RateProperties {
 
 const getScoreFromE = (e) => {
 	if (e.changedTouches) {
-		// Touch
+		// Touch event
 		return Math.round(
 			((e.changedTouches[0].clientX - e.target.offsetParent.offsetLeft) / e.target.clientWidth) * 10
 		);
 
-		// This formula worked before overall position was set to relative in css:
+		// This formula worked before overall component position was set to relative in css:
 		// Math.round(((e.changedTouches[0].clientX - e.target.offsetLeft) / e.target.clientWidth) * 10);
 	} else {
-		// Mouse
+		// Mouse event
 		return Math.round((e.nativeEvent.layerX / e.target.clientWidth) * 10);
 
-		// This formula worked before overall position was set to relative in css:
+		// This formula worked before overall component position was set to relative in css:
 		// Math.round(((e.clientX - e.target.offsetLeft) / e.target.clientWidth) * 10);
 	}
 };
 
 export default function RateTool(props: RateProperties) {
-	const score = useRef<number>();
+	const [score, setScore] = useState<number>(0);
 	const [clipPrcnt, setClipPrcnt] = useState("0%");
 	const [isScored, setIsScored] = useState<boolean>();
 	const [voteSubmitted, setVoteSubmitted] = useState<boolean>();
 
-    // Reset component when the user loads another story
-    React.useEffect(() => {
+	// Reset component when the user loads another story
+	React.useEffect(() => {
 		setClipPrcnt("0%");
 		setIsScored(false);
 		setVoteSubmitted(false);
@@ -106,9 +112,9 @@ export default function RateTool(props: RateProperties) {
 		// console.log(e)
 		if (!isScored) {
 			// Score is 1 - 10
-			score.current = getScoreFromE(e);
+			setScore(getScoreFromE(e));
 			// Convert score to percentage
-			setClipPrcnt(`${score.current * 10}%`);
+			setClipPrcnt(`${score * 10}%`);
 		}
 	};
 
@@ -116,7 +122,7 @@ export default function RateTool(props: RateProperties) {
 
 	const endRating = () => {
 		if (!isScored) {
-			score.current = 0;
+			setScore(0);
 			setClipPrcnt(`0%`);
 		}
 	};
@@ -125,16 +131,16 @@ export default function RateTool(props: RateProperties) {
 		e.preventDefault();
 
 		// Score is 1 - 10
-		score.current = getScoreFromE(e);
+		setScore(getScoreFromE(e));
 
 		// Convert score to percentage
-		setClipPrcnt(`${score.current * 10}%`);
+		setClipPrcnt(`${score * 10}%`);
 		setIsScored(true);
 	};
 
 	const submitScore = async () => {
 		try {
-			if (score.current === undefined) throw new Error("Can't vote until score selected");
+			if (score === undefined) throw new Error("Can't vote until score selected");
 			if (props.mongoUser === null) throw new Error("Not connected to db.");
 
 			const { story, collection } = await getSpecificStory(props.mongoUser, props.storyId, undefined, true);
@@ -144,7 +150,7 @@ export default function RateTool(props: RateProperties) {
 
 			const votesSoFar = story.votes >= 0 ? story.votes : 0;
 			const ratingSoFar = story.rating >= 0 ? story.rating : 0;
-			const update = { $set: { votes: votesSoFar + 1, rating: ratingSoFar + score.current } };
+			const update = { $set: { votes: votesSoFar + 1, rating: ratingSoFar + score } };
 
 			const result = await collection.updateOne({ _id: new ObjectId(props.storyId) }, update);
 			if (result === null) throw new Error("Couldn't save vote.");
@@ -171,6 +177,8 @@ export default function RateTool(props: RateProperties) {
 			<button onClick={submitScore} disabled={!isScored}>
 				Submit Score
 			</button>
+
+			<div className="score">{isScored && <span>Score: {score / 2} out of 5</span>}</div>
 
 			<div className="thanks">
 				<span>Thank You!</span>
