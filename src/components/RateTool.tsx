@@ -97,15 +97,19 @@ const getScoreFromE = (e) => {
 
 export default function RateTool(props: RateProperties) {
 	const [score, setScore] = useState<number>();
-	const [clipPrcnt, setClipPrcnt] = useState("0%");
+	const [clipPrcnt, setClipPrcnt] = useState<string>();
 	const [isScored, setIsScored] = useState<boolean>();
 	const [voteSubmitted, setVoteSubmitted] = useState<boolean>();
 
-	// Reset component when the user loads another story
+	// Reset component each time it loads a story
 	React.useEffect(() => {
 		setClipPrcnt("0%");
 		setIsScored(false);
-		setVoteSubmitted(false);
+
+        // If localStorage isn't available, this fails to "false," which is fine for now:
+        let alreadyVoted: boolean = window.localStorage && window.localStorage.getItem(props.storyId) ? true : false;
+        
+		setVoteSubmitted(alreadyVoted);
 	}, [props.storyId]);
 
 	const slideRating = (e) => {
@@ -141,12 +145,12 @@ export default function RateTool(props: RateProperties) {
 	const submitScore = async () => {
 		try {
 			if (score === undefined) throw new Error("Can't vote until score selected");
-			if (props.mongoUser === null) throw new Error("Not connected to db.");
 
+			if (props.mongoUser === null) throw new Error("Not connected to db.");
 			const { story, collection } = await getSpecificStory(props.mongoUser, props.storyId, undefined, true);
 
 			if (story === null) throw new Error("Couldn't find story.");
-			if (story.acceptVotes !== true) throw new Error("Can't vote");
+			if (story.acceptVotes !== true) throw new Error("Can't vote.");
 
 			const votesSoFar = story.votes >= 0 ? story.votes : 0;
 			const ratingSoFar = story.rating >= 0 ? story.rating : 0;
@@ -154,6 +158,14 @@ export default function RateTool(props: RateProperties) {
 
 			const result = await collection.updateOne({ _id: new ObjectId(props.storyId) }, update);
 			if (result === null) throw new Error("Couldn't save vote.");
+
+			if (window.localStorage) {
+				if (window.localStorage.getItem(props.storyId)) {
+					throw new Error("Already voted.");
+				} else {
+					window.localStorage.setItem(props.storyId, "voted");
+				}
+			}
 
 			setVoteSubmitted(true);
 			console.log("Vote counted!");
@@ -181,7 +193,7 @@ export default function RateTool(props: RateProperties) {
 			<div className="score">{isScored && <span>Score: {(score || 0) / 2} out of 5</span>}</div>
 
 			<div className="thanks">
-				<span>Thank You!</span>
+				<span>Thank You For Voting!</span>
 			</div>
 		</Wrapper>
 	);

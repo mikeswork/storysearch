@@ -7,7 +7,7 @@ async function getSpecificStory(mongoUser: Realm.User, storyId: string, fields?:
 
 	const fOptions: Realm.Services.MongoDB.FindOneOptions = fields ? { projection: fields } : {};
 
-    const doc = await stories.findOne({ _id: new ObjectId(storyId) }, fOptions);
+    const doc = await stories.findOne({ _id: new ObjectId(storyId), available: true }, fOptions);
 
     if (returnWithCollect) return { story: doc, collection: stories };
 	else return doc;
