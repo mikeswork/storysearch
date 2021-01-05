@@ -1,10 +1,7 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import styled from "styled-components";
+import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
-
-interface StoryProps {
-	mongoUser: Realm.User | null;
-}
 
 const Form = styled.form`
 	display: flex;
@@ -22,7 +19,11 @@ const fields = {
 let initState = {};
 Object.keys(fields).forEach((key) => (initState[key] = ""));
 
-export default function StoryForm(props: StoryProps) {
+export default function StoryForm() {
+    const { passwordUser, loginPassword } = useContext(RealmContext);
+
+    if (!passwordUser && loginPassword) loginPassword("t@test.com", "testtest");
+
 	const formReducer = (prevState, action) => {
 		// console.log("[formReducer]", action);
 
@@ -39,9 +40,9 @@ export default function StoryForm(props: StoryProps) {
 		e.preventDefault();
 
 		try {
-			if (!props.mongoUser) throw new Error("Not logged in.");
+			if (!passwordUser) throw new Error("Not logged in.");
 
-			const mongodb = props.mongoUser.mongoClient("mongodb-atlas");
+			const mongodb = passwordUser.mongoClient("mongodb-atlas");
 			const stories = mongodb.db("content").collection("stories");
 
 			// Saving paragraphs separately produces cleaner data.
@@ -69,7 +70,7 @@ export default function StoryForm(props: StoryProps) {
 			<Form onSubmit={submitForm}>
 				<input
 					type="text"
-					disabled={!props.mongoUser}
+					disabled={!passwordUser}
 					required={true}
 					placeholder={fields.title}
 					value={state.title}
@@ -77,14 +78,14 @@ export default function StoryForm(props: StoryProps) {
 				/>
 				<input
 					type="text"
-					disabled={!props.mongoUser}
+					disabled={!passwordUser}
 					required={true}
 					placeholder={fields.author}
 					value={state.author}
 					onChange={({ target: { value } }) => dispatch(["author", value])}
 				/>
 				<textarea
-					disabled={!props.mongoUser}
+					disabled={!passwordUser}
 					required={true}
 					rows={25}
 					cols={75}
@@ -93,7 +94,7 @@ export default function StoryForm(props: StoryProps) {
 					onChange={({ target: { value } }) => dispatch(["storyText", value])}
 				></textarea>
 
-				<input type="submit" disabled={!props.mongoUser}></input>
+				<input type="submit" disabled={!passwordUser}></input>
 			</Form>
 
 			<StoryView title={state.title} author={state.author} text={state.storyText.split(/\n/)} />

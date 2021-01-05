@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
+import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
 import { getSpecificStory } from "../util/getStories";
 import { useParams } from "react-router-dom";
@@ -15,19 +16,17 @@ const Div = styled.div`
 	}
 `;
 
-interface StoryProps {
-	mongoUser: Realm.User | null;
-}
-
-export default function StoryWinner({ mongoUser }: StoryProps) {
-	const { docId } = useParams();
+export default function StoryWinner(props) {
+    const { docId } = useParams();
+    
+    const { mongoUser } = useContext(RealmContext);
 
 	const [title, setTitle] = useState();
 	const [author, setAuthor] = useState();
 	const [storyText, setStoryText] = useState<string | string[] | undefined>();
 
 	useEffect(() => {
-		if (mongoUser !== null) {
+		if (mongoUser !== undefined) {
 			getSpecificStory(mongoUser, docId)
 				.then((story) => {
                     if (story === null) throw new Error("Couldn't find story");

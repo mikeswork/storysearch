@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import { ObjectId } from "bson";
+import { RealmContext } from "../RealmApp";
 import { getSpecificStory } from "../util/getStories";
 import pensoutlined from "../assets/pens-outlined.png";
 import pensfilled from "../assets/pens-filled.png";
@@ -72,11 +73,6 @@ const ClippedImg = styled.img`
         `}
 `;
 
-interface RateProperties {
-	mongoUser: Realm.User | null;
-	storyId: string;
-}
-
 const getScoreFromE = (e) => {
 	if (e.changedTouches) {
 		// Touch event
@@ -95,7 +91,9 @@ const getScoreFromE = (e) => {
 	}
 };
 
-export default function RateTool(props: RateProperties) {
+export default function RateTool({ storyId }: { storyId: string }) {
+    const { mongoUser } = useContext(RealmContext);
+
 	const [score, setScore] = useState<number>();
 	const [clipPrcnt, setClipPrcnt] = useState<string>();
 	const [isScored, setIsScored] = useState<boolean>();
@@ -107,10 +105,10 @@ export default function RateTool(props: RateProperties) {
 		setIsScored(false);
 
         // If localStorage isn't available, this fails to "false," which is fine for now:
-        let alreadyVoted: boolean = window.localStorage && window.localStorage.getItem(props.storyId) ? true : false;
+        let alreadyVoted: boolean = window.localStorage && window.localStorage.getItem(storyId) ? true : false;
         
 		setVoteSubmitted(alreadyVoted);
-	}, [props.storyId]);
+	}, [storyId]);
 
 	const slideRating = (e) => {
 		// console.log(e)
@@ -146,8 +144,8 @@ export default function RateTool(props: RateProperties) {
 		try {
 			if (score === undefined) throw new Error("Can't vote until score selected");
 
-			if (props.mongoUser === null) throw new Error("Not connected to db.");
-			const { story, collection } = await getSpecificStory(props.mongoUser, props.storyId, undefined, true);
+			if (mongoUser === undefined) throw new Error("Not connected to db.");
+			const { story, collection } = await getSpecificStory(mongoUser, storyId, undefined, true);
 
 			if (story === null) throw new Error("Couldn't find story.");
 			if (story.acceptVotes !== true) throw new Error("Can't vote.");
@@ -156,14 +154,14 @@ export default function RateTool(props: RateProperties) {
 			const ratingSoFar = story.rating >= 0 ? story.rating : 0;
 			const update = { $set: { votes: votesSoFar + 1, rating: ratingSoFar + score } };
 
-			const result = await collection.updateOne({ _id: new ObjectId(props.storyId) }, update);
+			const result = await collection.updateOne({ _id: new ObjectId(storyId) }, update);
 			if (result === null) throw new Error("Couldn't save vote.");
 
 			if (window.localStorage) {
-				if (window.localStorage.getItem(props.storyId)) {
+				if (window.localStorage.getItem(storyId)) {
 					throw new Error("Already voted.");
 				} else {
-					window.localStorage.setItem(props.storyId, "voted");
+					window.localStorage.setItem(storyId, "voted");
 				}
 			}
 

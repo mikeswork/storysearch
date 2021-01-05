@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import styled from "styled-components";
+import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
 import { getRandomStory } from "../util/getStories";
 import { Link } from "react-router-dom";
@@ -34,19 +35,18 @@ const grabPreview = (full: string | string[]) => {
 	}
 };
 
-interface StoryProps {
-	mongoUser: Realm.User | null;
-}
+export default function StoryPreview() {
+    const { mongoUser } = useContext(RealmContext);
 
-export default function StoryPreview({ mongoUser }: StoryProps) {
 	const [storyId, setStoryId] = useState();
 	const [title, setTitle] = useState();
     const [storyText, setStoryText] = useState<string | string[] | undefined>();
 
 	const getStory = useCallback(async (excludeId?) => {
-		if (mongoUser !== null) {
+		if (mongoUser !== undefined) {
 			try {
-				const story = await getRandomStory(mongoUser, excludeId);
+                const story = await getRandomStory(mongoUser, excludeId);
+                
                 if (story === null) throw new Error("Couldn't find story");
 
 				setStoryId(story._id.toString() || undefined);

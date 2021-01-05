@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import styled from "styled-components";
+import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
 import RateTool from "./RateTool";
 import { getSpecificStory, getRandomStory } from "../util/getStories";
@@ -16,14 +17,12 @@ const Div = styled.div`
 	}
 `;
 
-interface StoryProps {
-	mongoUser: Realm.User | null;
-}
-
-export default function StoryFull({ mongoUser }: StoryProps) {
+export default function StoryFull() {
     // console.log("[StoryFull][render]");
     const locState = useLocation().state;
-	const routedId = locState && locState.sId;
+    const routedId = locState && locState.sId;
+    
+    const { mongoUser } = useContext(RealmContext);
 
 	const [storyId, setStoryId] = useState(routedId);
 	const [title, setTitle] = useState();
@@ -32,7 +31,7 @@ export default function StoryFull({ mongoUser }: StoryProps) {
 
 	const getStory = useCallback(
 		async (excludeId?) => {
-			if (mongoUser !== null) {
+			if (mongoUser !== undefined) {
 				try {
 					const story = excludeId
 						? await getRandomStory(mongoUser, excludeId)
@@ -58,7 +57,7 @@ export default function StoryFull({ mongoUser }: StoryProps) {
 
 	return (
 		<Div>
-			{ canRate && <RateTool mongoUser={mongoUser} storyId={storyId} /> }
+			{ canRate && <RateTool storyId={storyId} /> }
 
 			<div className="buttons">
 				<button onClick={() => getStory(storyId)}>Read a Different Story</button>
