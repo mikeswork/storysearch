@@ -22,7 +22,8 @@ async function getRandomStory(mongoUser: Realm.User, excludeId?: string, fields?
 	const stories = mongodb.db("content").collection("approvedstories");
 
 	// In order to grab a random story, we only need the _id's
-    let availableIds = await stories.find({ available: true }, { projection: { _id: 1 } });
+    let availableIds = await stories.find({}, { projection: { _id: 1 } });
+    // console.log("[getRandomStory] availableIds:", availableIds);
 
     // Prevents the same story from being chosen twice in a row
     if (excludeId) {
