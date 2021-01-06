@@ -4,57 +4,69 @@ import * as Realm from "realm-web";
 const app: Realm.App = new Realm.App({ id: "storysearchapp-phwgx" });
 
 type RealmUserType = Realm.User | undefined;
+type UserFuncType = (email: string, password: string) => Promise<void>;
+
 interface RealmAppType {
-	mongoUser?: RealmUserType;
+    anonUser: RealmUserType;
+    userReg: UserFuncType;
+	userLogin: UserFuncType;
 	passwordUser?: RealmUserType;
-	loginPassword?: (email: string, password: string) => {};
 }
 
-const RealmContext = React.createContext<RealmAppType>({});
+const placeholder = async (email, password) => {};
+
+const RealmContext = React.createContext<RealmAppType>({
+    anonUser: undefined,
+    userReg: placeholder,
+    userLogin: placeholder
+});
 export { RealmContext };
 
 function RealmApp({ children }) {
 	// console.log("[App][render]");
-	const [mongoUser, setMongoUser]: [RealmUserType, Function] = useState<RealmUserType>();
+	const [anonUser, setAnonUser]: [RealmUserType, Function] = useState<RealmUserType>();
 	const [passwordUser, setPasswordUser]: [RealmUserType, Function] = useState<RealmUserType>();
 
 	useEffect(() => {
 		// console.log("[App][useEffect]");
-		loginAnonymous();
+
+		// Automatic, anonymous login
+		app.logIn(Realm.Credentials.anonymous())
+			.then((user) => {
+				console.log("Successfully logged in anonymous user!", user);
+				setAnonUser(user);
+			})
+			.catch((err) => {
+				console.error("Failed to log in anonymous user:", err);
+			});
 	}, []);
 
-	async function loginAnonymous() {
-		try {
-			// console.log("Authenticating user...");
-
-			// Authenticate the user
-			const user: Realm.User = await app.logIn(Realm.Credentials.anonymous());
-
-			console.log("Successfully logged in anonymous user!", user);
-			setMongoUser(user);
-		} catch (err) {
-			console.error("Failed to log in anonymous user:", err);
-		}
-	}
-
-	async function loginPassword(email: string, password: string) {
+	async function userLogin(email: string, password: string) {
 		const credentials = Realm.Credentials.emailPassword(email, password);
 
 		try {
 			// Authenticate the user
 			const user: Realm.User = await app.logIn(credentials);
 
-            console.log("Successfully logged in password user!", user);
+			console.log("Successfully logged in password user!", user);
 			setPasswordUser(user);
 		} catch (err) {
 			console.error("Failed to log in password user:", err);
 		}
 	}
 
+	async function userReg(email: string, password: string) {
+		try {
+			await app.emailPasswordAuth.registerUser(email, password);
+		} catch (err) {
+			console.error("Failed to register user:", err);
+		}
+	}
+
 	return (
-		<RealmContext.Provider value={{ mongoUser, passwordUser, loginPassword }}>
-			{children}
-		</RealmContext.Provider>
+		<RealmContext.Provider value={{ anonUser, userReg, userLogin, passwordUser }}>
+            {children}
+        </RealmContext.Provider>
 	);
 }
 

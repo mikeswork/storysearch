@@ -22,7 +22,7 @@ export default function StoryFull() {
     const locState = useLocation().state;
     const routedId = locState && locState.sId;
     
-    const { mongoUser } = useContext(RealmContext);
+    const { anonUser } = useContext(RealmContext);
 
 	const [storyId, setStoryId] = useState(routedId);
 	const [title, setTitle] = useState();
@@ -31,11 +31,11 @@ export default function StoryFull() {
 
 	const getStory = useCallback(
 		async (excludeId?) => {
-			if (mongoUser !== undefined) {
+			if (anonUser !== undefined) {
 				try {
 					const story = excludeId
-						? await getRandomStory(mongoUser, excludeId)
-						: await getSpecificStory(mongoUser, routedId);
+						? await getRandomStory(anonUser, excludeId)
+						: await getSpecificStory(anonUser, routedId);
 
                     if (story === null) throw new Error("Couldn't find story");
 
@@ -48,7 +48,7 @@ export default function StoryFull() {
 				}
 			}
 		},
-		[mongoUser, routedId]
+		[anonUser, routedId]
 	);
 
 	useEffect(() => {

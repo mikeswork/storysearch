@@ -36,16 +36,16 @@ const grabPreview = (full: string | string[]) => {
 };
 
 export default function StoryPreview() {
-    const { mongoUser } = useContext(RealmContext);
+    const { anonUser } = useContext(RealmContext);
 
 	const [storyId, setStoryId] = useState();
 	const [title, setTitle] = useState();
     const [storyText, setStoryText] = useState<string | string[] | undefined>();
 
 	const getStory = useCallback(async (excludeId?) => {
-		if (mongoUser !== undefined) {
+		if (anonUser !== undefined) {
 			try {
-                const story = await getRandomStory(mongoUser, excludeId);
+                const story = await getRandomStory(anonUser, excludeId);
                 
                 if (story === null) throw new Error("Couldn't find story");
 
@@ -59,7 +59,7 @@ export default function StoryPreview() {
 				console.log(error);
 			}
 		}
-	}, [mongoUser]);
+	}, [anonUser]);
 
 	useEffect(() => {
 		getStory();

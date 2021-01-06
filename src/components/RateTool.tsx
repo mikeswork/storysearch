@@ -92,7 +92,7 @@ const getScoreFromE = (e) => {
 };
 
 export default function RateTool({ storyId }: { storyId: string }) {
-    const { mongoUser } = useContext(RealmContext);
+    const { anonUser } = useContext(RealmContext);
 
 	const [score, setScore] = useState<number>();
 	const [clipPrcnt, setClipPrcnt] = useState<string>();
@@ -144,8 +144,8 @@ export default function RateTool({ storyId }: { storyId: string }) {
 		try {
 			if (score === undefined) throw new Error("Can't vote until score selected");
 
-			if (mongoUser === undefined) throw new Error("Not connected to db.");
-			const { story, collection } = await getSpecificStory(mongoUser, storyId, undefined, true);
+			if (anonUser === undefined) throw new Error("Not connected to db.");
+			const { story, collection } = await getSpecificStory(anonUser, storyId, undefined, true);
 
 			if (story === null) throw new Error("Couldn't find story.");
 			if (story.acceptVotes !== true) throw new Error("Can't vote.");

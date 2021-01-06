@@ -1,6 +1,7 @@
 import React, { useReducer, useContext } from "react";
 import styled from "styled-components";
 import { RealmContext } from "../RealmApp";
+import LoginRegister from "./LoginRegister";
 import StoryView from "./StoryView";
 
 const Form = styled.form`
@@ -20,10 +21,6 @@ let initState = {};
 Object.keys(fields).forEach((key) => (initState[key] = ""));
 
 export default function StoryForm() {
-    const { passwordUser, loginPassword } = useContext(RealmContext);
-
-    if (!passwordUser && loginPassword) loginPassword("t@test.com", "testtest");
-
 	const formReducer = (prevState, action) => {
 		// console.log("[formReducer]", action);
 
@@ -34,6 +31,8 @@ export default function StoryForm() {
 
 	const [state, dispatch] = useReducer(formReducer, initState);
 	// console.log(JSON.stringify(state.storyText))
+
+	const { passwordUser } = useContext(RealmContext);
 
 	const submitForm = async (e) => {
 		console.log("[submitForm]");
@@ -57,15 +56,15 @@ export default function StoryForm() {
 				body: paragraphs,
 			};
 
-            await stories.insertOne(storyDoc);
-            alert("Thank you!");
+			await stories.insertOne(storyDoc);
+			alert("Thank you!");
 			dispatch("reset");
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	return (
+	return passwordUser ? (
 		<div>
 			<Form onSubmit={submitForm}>
 				<input
@@ -99,5 +98,7 @@ export default function StoryForm() {
 
 			<StoryView title={state.title} author={state.author} text={state.storyText.split(/\n/)} />
 		</div>
+	) : (
+		<LoginRegister />
 	);
 }

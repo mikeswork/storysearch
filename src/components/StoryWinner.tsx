@@ -19,15 +19,15 @@ const Div = styled.div`
 export default function StoryWinner(props) {
     const { docId } = useParams();
     
-    const { mongoUser } = useContext(RealmContext);
+    const { anonUser } = useContext(RealmContext);
 
 	const [title, setTitle] = useState();
 	const [author, setAuthor] = useState();
 	const [storyText, setStoryText] = useState<string | string[] | undefined>();
 
 	useEffect(() => {
-		if (mongoUser !== undefined) {
-			getSpecificStory(mongoUser, docId)
+		if (anonUser !== undefined) {
+			getSpecificStory(anonUser, docId)
 				.then((story) => {
                     if (story === null) throw new Error("Couldn't find story");
                     
@@ -40,7 +40,7 @@ export default function StoryWinner(props) {
                     console.log(err);
 				});
 		}
-	}, [mongoUser, docId]);
+	}, [anonUser, docId]);
 
 	return (
 		<Div>
