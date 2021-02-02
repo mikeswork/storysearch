@@ -5,7 +5,7 @@ import StoryView from "./StoryView";
 import { getSpecificStory } from "../util/getStories";
 import { useParams } from "react-router-dom";
 
-const Div = styled.div`
+const Section = styled.section`
 	position: relative;
     display: flex;
     flex-direction: column;
@@ -43,8 +43,8 @@ export default function StoryWinner(props) {
 	}, [anonUser, docId]);
 
 	return (
-		<Div>
+		<Section>
 			<StoryView title={title} author={author} text={storyText} />
-		</Div>
+		</Section>
 	);
 }

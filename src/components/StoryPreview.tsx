@@ -5,8 +5,10 @@ import StoryView from "./StoryView";
 import Button from "./Button";
 import { getRandomStory } from "../util/getStories";
 
-const Div = styled.div`
-	.buttons {
+const Section = styled.section`
+    ${props => props.theme.lightBg}
+    
+    .buttons {
         display: flex;
         justify-content: space-evenly;
 	}
@@ -65,14 +67,14 @@ export default function StoryPreview() {
 	}, [getStory]);
 
 	return (
-		<Div data-testid="story-preview">
+		<Section data-testid="story-preview">
 			<StoryView isWide={true} title={title} text={storyText} />
 
             <div className="buttons">
-				<Button onclick={() => getStory(storyId)} text="Read a Different Story"/>
+				<Button onClick={() => getStory(storyId)} text="Read a Different Story."/>
 
 				<Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story."/>
 			</div>
-		</Div>
+		</Section>
 	);
 }

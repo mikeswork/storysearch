@@ -65,7 +65,7 @@ export default function StoryForm() {
 	};
 
 	return passwordUser ? (
-		<div>
+		<section>
 			<Form onSubmit={submitForm}>
 				<input
 					type="text"
@@ -97,8 +97,10 @@ export default function StoryForm() {
 			</Form>
 
 			<StoryView title={state.title} author={state.author} text={state.storyText.split(/\n/)} />
-		</div>
+		</section>
 	) : (
-		<LoginRegister />
+		<section>
+            <LoginRegister />
+        </section>
 	);
 }

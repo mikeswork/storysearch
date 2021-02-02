@@ -4,14 +4,13 @@ import books from "../assets/books.jpg";
 import Nav from "./Nav";
 
 const Header = styled.header`
-    ${props => props.theme.main}
-    
     position: relative;
 	width: 100%;
 	height: 80vh;
 	min-height: 350px;
-	background-image: url(${books});
-	background-size: cover;
+
+    background: linear-gradient(#00000088 30%, #00000000 60%), url(${books});
+    background-size: cover;
     background-position: top center;
 
 	.masthead-title {
@@ -31,6 +30,7 @@ const Header = styled.header`
         margin: 50px 0 0 0;
         text-shadow: 4px 4px 40px #000, 2px 2px 32px #000, 1px 1px 16px #000, 4px 4px 8px #000, 2px 2px 6px #000;
         font-size: 3.5em;
+        font-weight: normal;
     }
 
     h3 {

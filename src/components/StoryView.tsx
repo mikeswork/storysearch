@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 
 const WideView = styled.div`
-    background-color: #eee;
+    ${props => props.theme.lightBg}
+
     color: #111;
     font-family: sans-serif;
     padding: 1em;

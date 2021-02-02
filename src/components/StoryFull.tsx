@@ -3,18 +3,17 @@ import styled from "styled-components";
 import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
 import RateTool from "./RateTool";
+import Button from "./Button";
 import { getSpecificStory, getRandomStory } from "../util/getStories";
 import { useLocation } from "react-router-dom";
 
-const Div = styled.div`
+const Section = styled.section`
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 
-	.buttons {
-		position: absolute;
-	}
+	
 `;
 
 export default function StoryFull() {
@@ -56,14 +55,12 @@ export default function StoryFull() {
 	}, [getStory]);
 
 	return (
-		<Div>
-			{ canRate && <RateTool storyId={storyId} /> }
-
-			<div className="buttons">
-				<button onClick={() => getStory(storyId)}>Read a Different Story</button>
-			</div>
-
+		<Section>
 			<StoryView title={title} text={storyText} />
-		</Div>
+
+            { canRate && <RateTool storyId={storyId} /> }
+
+            <Button onClick={() => getStory(storyId)} text="Read a Different Story"/>
+		</Section>
 	);
 }

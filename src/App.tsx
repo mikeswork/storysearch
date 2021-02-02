@@ -9,7 +9,7 @@ import StoryFull from "./components/StoryFull";
 import StoryWinner from "./components/StoryWinner";
 
 const theme = {
-	main: `h1, h3 {font-weight: normal;}`,
+    lightBg: `background-color: #eee;`,
 };
 
 function App() {

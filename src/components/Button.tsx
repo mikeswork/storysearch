@@ -7,13 +7,16 @@ const RouteLink = styled(Link)`
 	display: block;
 	margin: 0 0 20px 0;
 	border-radius: 10px;
-	padding: 3px 93px 3px 38px;
+
+	${({ $size }) => $size === "medium" && `padding: 3px 38px 3px 38px;`};
+	${({ $size }) => $size === "large" && `padding: 3px 93px 3px 38px;`};
+
 	color: #000;
 	text-decoration: none;
-    font-weight: bold;
+	font-weight: bold;
 
-    ${({$size}) => $size === "medium" && `font-size: 1em;`}
-    ${({$size}) => $size === "large" && `font-size: 1.25em;`}
+	${({ $size }) => $size === "medium" && `font-size: 1em;`}
+	${({ $size }) => $size === "large" && `font-size: 1.25em;`}
 
 	background-color: #ffffeeff;
 	transition: all 0.15s, transform 0.05s;
@@ -28,7 +31,9 @@ const RouteLink = styled(Link)`
 	}
 
 	&:before {
-        ${({$size}) => $size === "medium" && `
+		${({ $size }) =>
+			$size === "medium" &&
+			`
             left: -4px;
             right: -4px;
             top: -4px;
@@ -36,7 +41,9 @@ const RouteLink = styled(Link)`
             border: 5px solid black;
             border-radius: 10px;
         `};
-        ${({$size}) => $size === "large" && `
+		${({ $size }) =>
+			$size === "large" &&
+			`
             left: -5px;
             right: -5px;
             top: -5px;
@@ -46,7 +53,9 @@ const RouteLink = styled(Link)`
         `};
 	}
 	&:after {
-        ${({$size}) => $size === "medium" && `
+		${({ $size }) =>
+			$size === "medium" &&
+			`
             left: 1px;
             right: 1px;
             top: 0;
@@ -54,7 +63,9 @@ const RouteLink = styled(Link)`
             border: 1px solid #ffffeeff;
         `};
 
-        ${({$size}) => $size === "large" && `
+		${({ $size }) =>
+			$size === "large" &&
+			`
             left: 6px;
             right: 6px;
             top: 2px;
@@ -62,7 +73,7 @@ const RouteLink = styled(Link)`
             border: 5px solid #ffffeeff;
         `};
 
-        border-radius: 7px;
+		border-radius: 7px;
 	}
 
 	&:hover {
@@ -86,12 +97,21 @@ interface ButtonProps {
 	text: string;
 	route?: string | object;
 	size?: "medium" | "large";
-	onclick?: (object) => void;
+	onClick?: (object) => void;
 }
 
-export default function Button({ route, text, size = "medium", onclick }: ButtonProps) {
+export default function Button({ route = "", text, size = "medium", onClick }: ButtonProps) {
+	const customClick = (e) => {
+		if (onClick) {
+			// Cancel route if callback provided
+			e.preventDefault();
+
+			onClick(e);
+		}
+	};
+
 	return (
-		<RouteLink to={route} $size={size} onClick={onclick}>
+		<RouteLink to={route} $size={size} onClick={customClick}>
 			{text}
 		</RouteLink>
 	);
