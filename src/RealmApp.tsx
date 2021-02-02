@@ -28,17 +28,22 @@ function RealmApp({ children }) {
 	const [passwordUser, setPasswordUser]: [RealmUserType, Function] = useState<RealmUserType>();
 
 	useEffect(() => {
-		// console.log("[App][useEffect]");
+        // console.log("[App][useEffect]");
+        let isSubscribed = true;
 
 		// Automatic, anonymous login
 		app.logIn(Realm.Credentials.anonymous())
 			.then((user) => {
-				console.log("Successfully logged in anonymous user!", user);
-				setAnonUser(user);
+                if (isSubscribed) {
+                    console.log("Successfully logged in anonymous user!", user);
+				    setAnonUser(user);
+                }
 			})
 			.catch((err) => {
-				console.error("Failed to log in anonymous user:", err);
-			});
+				if (isSubscribed) console.error("Failed to log in anonymous user:", err);
+            });
+            
+        return () => { isSubscribed = false; }
 	}, []);
 
 	async function userLogin(email: string, password: string) {
