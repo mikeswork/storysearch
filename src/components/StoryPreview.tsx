@@ -2,14 +2,13 @@ import React, { useState, useEffect, useCallback, useContext } from "react";
 import styled from "styled-components";
 import { RealmContext } from "../RealmApp";
 import StoryView from "./StoryView";
+import Button from "./Button";
 import { getRandomStory } from "../util/getStories";
-import { Link } from "react-router-dom";
 
 const Div = styled.div`
-	position: relative;
-
 	.buttons {
-		position: absolute;
+        display: flex;
+        justify-content: space-evenly;
 	}
 `;
 
@@ -67,13 +66,13 @@ export default function StoryPreview() {
 
 	return (
 		<Div data-testid="story-preview">
-			<div className="buttons">
-				<button onClick={() => getStory(storyId)}>Read a Different Story</button>
-
-				<Link to={{ pathname: "/story", state: { sId: storyId } }}>Read entire story.</Link>
-			</div>
-
 			<StoryView isWide={true} title={title} text={storyText} />
+
+            <div className="buttons">
+				<Button onclick={() => getStory(storyId)} text="Read a Different Story"/>
+
+				<Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story."/>
+			</div>
 		</Div>
 	);
 }
