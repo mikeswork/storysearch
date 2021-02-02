@@ -65,11 +65,12 @@ export default function StoryForm() {
 	};
 
 	return passwordUser ? (
-		<section>
+		<section id="story-form">
 			<Form onSubmit={submitForm}>
 				<input
 					type="text"
-					disabled={!passwordUser}
+                    disabled={!passwordUser}
+                    autoComplete="off"
 					required={true}
 					placeholder={fields.title}
 					value={state.title}
@@ -77,14 +78,16 @@ export default function StoryForm() {
 				/>
 				<input
 					type="text"
-					disabled={!passwordUser}
+                    disabled={!passwordUser}
+                    autoComplete="on"
 					required={true}
 					placeholder={fields.author}
 					value={state.author}
 					onChange={({ target: { value } }) => dispatch(["author", value])}
 				/>
 				<textarea
-					disabled={!passwordUser}
+                    disabled={!passwordUser}
+                    autoComplete="off"
 					required={true}
 					rows={25}
 					cols={75}
@@ -99,7 +102,7 @@ export default function StoryForm() {
 			<StoryView title={state.title} author={state.author} text={state.storyText.split(/\n/)} />
 		</section>
 	) : (
-		<section>
+		<section id="story-form">
             <LoginRegister />
         </section>
 	);

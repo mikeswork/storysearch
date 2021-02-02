@@ -67,13 +67,12 @@ export default function StoryPreview() {
 	}, [getStory]);
 
 	return (
-		<Section data-testid="story-preview">
+		<Section data-testid="story-preview" id="story-preview">
 			<StoryView isWide={true} title={title} text={storyText} />
 
             <div className="buttons">
-				<Button onClick={() => getStory(storyId)} text="Read a Different Story."/>
-
-				<Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story."/>
+                <Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story"/>
+				<Button onClick={() => getStory(storyId)} text="Preview a Different Story"/>
 			</div>
 		</Section>
 	);

@@ -52,46 +52,46 @@ export default function LoginRegister() {
 	}
 
 	return (
-		<div>
-			<form onSubmit={submit} ref={formEl}>
-				<h3>{isLogin ? "Login" : "Register"}</h3>
-				<p>
-					<input
-						type="button"
-						value={isLogin ? "Switch to Register" : "Switch to Login"}
-						onClick={toggleMode}
-					/>
-				</p>
+        <form onSubmit={submit} ref={formEl}>
+            <h3>{isLogin ? "Login" : "Register"}</h3>
+            <p>
+                <input
+                    type="button"
+                    value={isLogin ? "Switch to Register" : "Switch to Login"}
+                    onClick={toggleMode}
+                />
+            </p>
 
-				<input
-					type="email"
-					required={true}
-					placeholder="Email"
-					value={email}
-					onChange={({ target: { value } }) => setEmail(value)}
-				/>
-				<input
-					type="password"
-					required={true}
-					placeholder="Password"
-					value={password}
-					onChange={({ target: { value } }) => setPassword(value)}
-				/>
+            <input
+                type="email"
+                required={true}
+                placeholder="Email"
+                value={email}
+                onChange={({ target: { value } }) => setEmail(value)}
+            />
+            <input
+                type="password"
+                autoComplete="off"
+                required={true}
+                placeholder="Password"
+                value={password}
+                onChange={({ target: { value } }) => setPassword(value)}
+            />
 
-				{!isLogin && (
-					<input
-						type="password"
-						required={true}
-						placeholder="Confirm Password"
-						value={passwordDup}
-						ref={passDupEl}
-						onChange={({ target: { value } }) => setPasswordDup(value)}
-					/>
-				)}
+            {!isLogin && (
+                <input
+                    type="password"
+                    autoComplete="off"
+                    required={true}
+                    placeholder="Confirm Password"
+                    value={passwordDup}
+                    ref={passDupEl}
+                    onChange={({ target: { value } }) => setPasswordDup(value)}
+                />
+            )}
 
-				<input type="submit" value={isLogin ? "Login" : "Register"} />
-				<input type="reset" />
-			</form>
-		</div>
+            <input type="submit" value={isLogin ? "Login" : "Register"} />
+            <input type="reset" />
+        </form>
 	);
 }
