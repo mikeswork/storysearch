@@ -5,9 +5,11 @@ import StoryView from "./StoryView";
 import Button from "./Button";
 import { getRandomStory } from "../util/getStories";
 
+
 const Section = styled.section`
+    ${props => props.$loading && props.theme.loading}
     ${props => props.theme.lightBg}
-    
+
     .buttons {
         display: flex;
         justify-content: space-evenly;
@@ -42,6 +44,7 @@ export default function StoryPreview() {
 	const [storyId, setStoryId] = useState();
 	const [title, setTitle] = useState();
     const [storyText, setStoryText] = useState<string | string[] | undefined>();
+    const [isLoading, setIsLoading] = useState(true);
 
 	const getStory = useCallback(async (excludeId?) => {
 		if (anonUser !== undefined) {
@@ -58,21 +61,30 @@ export default function StoryPreview() {
 			} catch (error) {
                 setStoryText("Failed to load.");
 				console.log(error);
-			}
+			} finally {
+                setIsLoading(false);
+            }
 		}
 	}, [anonUser]);
 
 	useEffect(() => {
 		getStory();
-	}, [getStory]);
+    }, [getStory]);
+    
+    const loadNewStory = () => {
+        if (isLoading) return;
+
+        setIsLoading(true);
+        getStory(storyId);
+    }
 
 	return (
-		<Section data-testid="story-preview" id="story-preview">
+		<Section data-testid="story-preview" id="story-preview" $loading={isLoading}>
 			<StoryView isWide={true} title={title} text={storyText} />
 
             <div className="buttons">
-                <Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story"/>
-				<Button onClick={() => getStory(storyId)} text="Preview a Different Story"/>
+                <Button route={{ pathname: "/story", state: { sId: storyId } }} text="Read entire story" disabled={isLoading}/>
+				<Button onClick={loadNewStory} text="Preview a Different Story" disabled={isLoading} />
 			</div>
 		</Section>
 	);

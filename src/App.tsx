@@ -7,9 +7,11 @@ import StoryPreview from "./components/StoryPreview";
 import StoryForm from "./components/StoryForm";
 import StoryFull from "./components/StoryFull";
 import StoryWinner from "./components/StoryWinner";
+import loading from "./assets/loading.gif";
 
 const theme = {
-    lightBg: `background-color: #eee;`,
+    loading: `background: url(${loading}) no-repeat 50%/150px;`,
+    lightBg: `background-color: #eee;`
 };
 
 function App() {

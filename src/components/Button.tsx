@@ -26,6 +26,11 @@ const Wrapper = styled.div`
 		transition-timing-function: ease-out;
 		text-shadow: 0 0 4px #00000090;
 
+        ${props => props.$disabled && `
+            pointer-events: none;
+            opacity: 0.4;
+        `}
+
 		&:before,
 		&:after {
 			content: "";
@@ -101,10 +106,11 @@ interface ButtonProps {
 	text: string;
 	route?: string | object;
 	size?: "medium" | "large";
+	disabled?: boolean;
 	onClick?: (object) => void;
 }
 
-export default function Button({ route = "", text, size = "medium", onClick }: ButtonProps) {
+export default function Button({ route = "", text, size = "medium", disabled, onClick }: ButtonProps) {
 	const customClick = (e) => {
 		if (onClick) {
 			// Cancel route/hash link if callback provided
@@ -126,5 +132,9 @@ export default function Button({ route = "", text, size = "medium", onClick }: B
 			</Link>
 		);
 
-	return <Wrapper $size={size}>{LinkElement}</Wrapper>;
+	return (
+		<Wrapper $size={size} $disabled={disabled}>
+			{LinkElement}
+		</Wrapper>
+	);
 }
